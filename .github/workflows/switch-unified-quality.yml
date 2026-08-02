@@ -1,0 +1,33 @@
+name: Switch Unified MCP Quality
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["release/switch-unified-2026-08-01"]
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Validate dependency policy
+        run: pnpm check:deps
+      - name: Run workspace type and lint checks
+        run: pnpm check:turbo
+      - name: Check formatting
+        run: pnpm check:format
+      - name: Run monorepo tests
+        run: pnpm test:ci
+      - name: Verify the observability library types
+        run: pnpm --filter @repo/mcp-observability types
+      - name: Verify the selected Workers Observability app
+        run: pnpm --filter workers-observability check:types
