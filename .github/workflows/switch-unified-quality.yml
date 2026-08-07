@@ -3,9 +3,9 @@ name: Switch Unified MCP Quality
 on:
   workflow_dispatch:
   pull_request:
-    branches: ["main"]
+    branches: ['main']
   push:
-    branches: ["release/switch-unified-2026-08-01"]
+    branches: ['main', 'release/switch-unified-2026-08-01']
 
 env:
   FORCE_COLOR: 1
@@ -17,7 +17,11 @@ jobs:
       contents: read
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+      - name: Verify Switch Cloudflare deployment guard
+        run: >-
+          node .github/scripts/validate-switch-cloudflare-config.mjs
+          apps/workers-observability/wrangler.jsonc
       - uses: ./.github/actions/setup
       - name: Validate dependency policy
         run: pnpm check:deps
