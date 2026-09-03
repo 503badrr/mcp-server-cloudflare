@@ -513,13 +513,20 @@ export function renderApprovalDialog(request: Request, options: ApprovalDialogOp
             </form>
           </div>
         </div>
+        
+        <!-- Vercel Speed Insights -->
+        <script>
+          window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+        </script>
+        <script defer src="/_vercel/speed-insights/script.js"></script>
       </body>
     </html>
   `
 
 	return new Response(htmlContent, {
 		headers: {
-			'Content-Security-Policy': "frame-ancestors 'none'",
+			'Content-Security-Policy':
+				"frame-ancestors 'none'; script-src 'unsafe-inline' 'self' https://va.vercel-scripts.com; connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com",
 			'Content-Type': 'text/html; charset=utf-8',
 			'Set-Cookie': setCookie,
 			'X-Frame-Options': 'DENY',
