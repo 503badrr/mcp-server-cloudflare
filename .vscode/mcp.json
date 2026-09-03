@@ -14,7 +14,7 @@
     },
     "supabase": {
       "type": "http",
-      "url": "https://mcp.supabase.com/mcp?read_only=true&features=docs%2Cdatabase%2Cdebugging"
+      "url": "https://mcp.supabase.com/mcp?read_only=true&features=docs%2Cdatabase"
     }
   }
 }
