@@ -1,0 +1,65 @@
+/**
+ * Portable self-host configuration for Workers Builds MCP.
+ *
+ * This intentionally does not reuse Cloudflare's internal account IDs,
+ * custom domains, KV namespaces, OAuth client IDs, or Sentry settings from
+ * the upstream production configuration.
+ *
+ * Authentication: send a Cloudflare API token as
+ *   Authorization: Bearer <token>
+ * The existing server routes Bearer tokens through API-token mode.
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"main": "src/workers-builds.app.ts",
+	"compatibility_date": "2025-03-10",
+	"compatibility_flags": ["nodejs_compat"],
+	"name": "mcp-workers-builds-selfhost",
+	"workers_dev": true,
+	"preview_urls": true,
+	"migrations": [
+		{
+			"new_sqlite_classes": ["UserDetails", "BuildsMCP"],
+			"tag": "v1"
+		},
+		{
+			"deleted_classes": ["UserDetails"],
+			"tag": "v2"
+		}
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"class_name": "BuildsMCP",
+				"name": "MCP_OBJECT"
+			}
+		]
+	},
+	"observability": {
+		"enabled": true,
+		"traces": {
+			"enabled": true,
+			"head_sampling_rate": 0.1
+		}
+	},
+	"analytics_engine_datasets": [
+		{
+			"binding": "MCP_METRICS",
+			"dataset": "mcp-workers-builds-selfhost"
+		}
+	],
+	"vars": {
+		"ENVIRONMENT": "production",
+		"MCP_SERVER_NAME": "workers-builds-selfhost",
+		"MCP_SERVER_VERSION": "0.2.1",
+		"GIT_HASH": "selfhost",
+		"SENTRY_DSN": "",
+		"SENTRY_ACCESS_CLIENT_ID": "",
+		"SENTRY_ACCESS_CLIENT_SECRET": "",
+		"DEV_DISABLE_OAUTH": "false",
+		"DEV_CLOUDFLARE_API_TOKEN": "",
+		"DEV_CLOUDFLARE_EMAIL": "",
+		"CLOUDFLARE_CLIENT_ID": "",
+		"CLOUDFLARE_CLIENT_SECRET": ""
+	}
+}
